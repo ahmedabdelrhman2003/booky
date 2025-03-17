@@ -52,5 +52,5 @@ This project is licensed under the **MIT License**.
 We welcome contributions! Feel free to submit a pull request or open an issue.
 
 ## 📧 Contact
-For inquiries, reach out at **ahmed297@gmail.com** 
+For inquiries, reach out at **ahmedabdelrhman297@gmail.com** 
 
