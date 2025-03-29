@@ -64,4 +64,9 @@ class Book extends Model implements HasMedia
         });
     }
 
+    public function scopeApproved(Builder $query): void
+    {
+        $query->where('status',BookStatusEnum::APPROVED->value);
+    }
+
 }

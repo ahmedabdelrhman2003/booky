@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Repositories\Interfaces;
+
+use App\DTOs\V1\User\Book\SetUpDTO;
+use App\DTOs\V1\User\Profile\UpdateProfileDTO;
+use App\Models\Book;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+interface BookRepositoryInterface
+{
+
+    public function findById(int $id): Book;
+
+    public function all(SetUpDTO $dto): LengthAwarePaginator|Collection;
+
+}
