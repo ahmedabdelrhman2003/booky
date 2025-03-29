@@ -41,10 +41,11 @@ class BookResource extends Resource
                 Forms\Components\TextInput::make('price_before_commission')->label('Price')->required()->integer(),
 
                     Select::make('categories')
-                        ->label('Categories')
-                        ->options(Category::all()->pluck('name', 'id'))
-                        ->multiple()->searchable()
-                        ->preload()->required(),
+                        ->relationship('categories', 'name') // Relates to categories
+                        ->multiple()
+                        ->preload()
+                        ->searchable()
+                        ->required(),
 
                     Select::make('language')->required()
                         ->options([
@@ -87,12 +88,12 @@ class BookResource extends Resource
             TextColumn::make('status')->badge()
                 ->sortable()->searchable(),
 
-//                TextColumn::make('categories')
-//                    ->label('Categories')
-//                    ->getStateUsing(function ($record) {
-//                        return $record->categories->pluck('name')->join(', '); // Display categories as a comma-separated list
-//                    })
-//                    ->searchable()
+                TextColumn::make('categories')
+                    ->label('Categories')
+                    ->getStateUsing(function ($record) {
+                        return $record->categories->pluck('name')->join(', '); // Display categories as a comma-separated list
+                    })->default('----')
+                    ->searchable()
 
             ])->modifyQueryUsing(function (Builder $query) {
                     return $query->where('author_id', auth()->id());
@@ -106,9 +107,7 @@ class BookResource extends Resource
                         0 => 'Inactive',
                     ]),
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(collect(BookStatusEnum::cases())->mapWithKeys(fn($case) => [
-                        $case->value => $case->getLabel(),
-                    ])->toArray())
+                    ->options(BookStatusEnum::class)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -154,4 +153,10 @@ class BookResource extends Resource
 
         return $data;
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('author_id',auth()->id());
+    }
+
 }

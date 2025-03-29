@@ -29,31 +29,56 @@ class UploadAudioBook implements ShouldQueue
      */
     public function handle(): void
     {
+        try {
+            $pdfMedia = $this->book->getFirstMedia('book');
+            if ($pdfMedia) {
+                $pdfFile = file_get_contents($pdfMedia->getPath());
 
+                $response = Http::attach('file', $pdfFile, $pdfMedia->file_name)
+                    ->timeout(50000)
+                    ->post('http://127.0.0.2:8000/textSpeech/upload/', ['language' => 'en']);
 
+                Log::info('Sending request to text-to-speech server', [
+                    'url' => 'http://127.0.0.2:8000/textSpeech/upload/',
+                    'file_name' => $pdfMedia->file_name,
+                    'language' => 'en',
+                    'status' => $response->status(),
+                ]);
 
-        $pdfMedia = $this->book->getFirstMedia('book');
-        if ($pdfMedia) {
-            $pdfFile = file_get_contents($pdfMedia->getPath());
+                if ($response->successful()) {
+                    $audio_url = $response->json('audio_path');
 
-            $response = Http::attach('file', $pdfFile, $pdfMedia->file_name)
-               ->timeout(50000)
-                ->post('http://127.0.0.2:8000/textSpeech/upload/', ['language' => 'en']);
+                    if (!$audio_url) {
+                        Log::error('The response does not contain an audio path.', [
+                            'response_body' => $response->body(),
+                        ]);
+                        return;
+                    }
 
-            Log::info($response->body());
-            Log::info('Sending request to text-to-speech server', [
-                'url' => 'http://127.0.0.2:8000/textSpeech/upload/',
-                'file_name' => $pdfMedia->file_name,
-                'language' => 'en',
+                    $this->book
+                        ->addMediaFromUrl($audio_url)
+                        ->toMediaCollection('audio');
+
+                    Log::info('Success: The audio file was uploaded successfully.', [
+                        'audio_url' => $audio_url,
+                    ]);
+                } else {
+                    Log::error('Failed to process text-to-speech conversion.', [
+                        'status' => $response->status(),
+                        'response_body' => $response->body(),
+                    ]);
+                }
+            }
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            Log::error('HTTP Request failed', [
+                'error_message' => $e->getMessage(),
             ]);
-            $audio_url = $response->json('audio_path');
-            Log::info($audio_url);
-            $this->book
-                ->addMediaFromUrl($audio_url)
-                ->toMediaCollection('audio');
-            Log::info('success', ['the audio uploaded successfully']);
-
+        } catch (\Exception $e) {
+            Log::error('An unexpected error occurred', [
+                'error_message' => $e->getMessage(),
+            ]);
         }
     }
+
 
 }

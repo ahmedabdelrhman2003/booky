@@ -43,7 +43,7 @@ class Book extends Model implements HasMedia
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class,'books_categories');
     }
 
     public function scopeActive(Builder $query): void
