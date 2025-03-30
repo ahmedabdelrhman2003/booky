@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Book\BookController;
 use App\Http\Controllers\Api\V1\User\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\User\Auth\OtpController;
 use Illuminate\Http\Request;
@@ -33,5 +34,13 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('/logout', [AuthenticationController::class, 'logout'])->middleware(["auth:api"]);
     });
+
+    Route::group(['middleware' => ['auth:api']], function (){
+    Route::group(['prefix' => 'books'], function (){
+        Route::get('/', [BookController::class, 'index']);
+        Route::get('/{id}', [BookController::class, 'show']);
+    });
+    });
+
 });
 
