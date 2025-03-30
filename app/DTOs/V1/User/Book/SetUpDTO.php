@@ -8,8 +8,7 @@ class SetUpDTO
 {
     protected ?bool $pagination;
     protected ?int $limit = 9;
-    protected ?string $search;
-    protected ?int $category_id;
+    protected ? array $filters;
 
     public function __construct(public array $data)
     {
@@ -20,10 +19,9 @@ class SetUpDTO
 
     final protected function map(array $data): bool
     {
-        $this->limit = isset($data['limit']) ?? $this->limit;
-        $this->search = isset($data['search']) ?? null;
+        $this->limit = $data['limit'] ?? 9;
         $this->pagination = isset($data['pagination']) ?? false;
-        $this->category_id = isset($data['category_id']) ?? null;
+        $this->filters = $data['filter'] ?? [];
         return true;
     }
 
@@ -34,13 +32,29 @@ class SetUpDTO
 
     final public function getSearch(): ?string
     {
-        return $this->search;
+        return $this->filters['search'] ?? null;
     }
 
-    final public function getCategoryId(): ?string
+    final public function getFilters(): ?array
     {
-        return $this->category_id;
+        return $this->filters;
     }
+
+    final public function getCategoryId(): ?int
+    {
+        return $this->filters['category_id'] ?? null;
+    }
+
+    final public function getLanguage(): ?string
+    {
+        return $this->filters['language'] ?? null;
+    }
+
+    final public function getAuthorId(): ?string
+    {
+        return $this->filters['author_id'] ?? null;
+    }
+
 
     final public function getLimit(): ?int
     {

@@ -28,7 +28,7 @@ class GetBookRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer',
-                Rule::exists('restaurants', 'id')
+                Rule::exists('books', 'id')
                     ->where('status', BookStatusEnum::APPROVED->value)
                     ->where('activation', 1)]
         ];

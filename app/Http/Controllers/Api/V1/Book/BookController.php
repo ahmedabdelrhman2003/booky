@@ -6,6 +6,7 @@ use App\DTOs\V1\User\Book\SetUpDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\AllBooksRequest;
 use App\Http\Requests\Book\GetBookRequest;
+use App\Http\Resources\Book\BookCollection;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Responses\DataResponse;
 use App\Http\Responses\ErrorResponse;
@@ -26,8 +27,8 @@ class BookController extends Controller
         try {
             $dto = new SetUpDTO($request->validated());
             $books = $this->bookService->all($dto);
-            $collection = BookResource::collection($books);
-            return (new DataResponse(['books' => $collection]))->toJson();
+            $collection = new BookCollection($books);
+            return (new DataResponse($collection))->toJson();
         } catch (Throwable $exception) {
             Log::error('error in index books function ', [$exception->getMessage()]);
             return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();

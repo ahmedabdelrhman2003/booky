@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\BookRepository;
+use App\Repositories\Interfaces\BookRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\UserVerificationRepositoryInterface;
 use App\Repositories\UserRepository;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(UserVerificationRepositoryInterface::class, UserVerificationRepository::class);
+        $this->app->bind(BookRepositoryInterface::class, BookRepository::class);
     }
 
     /**

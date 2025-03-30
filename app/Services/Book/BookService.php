@@ -5,8 +5,8 @@ namespace App\Services\Book;
 use App\DTOs\V1\User\Book\SetUpDTO;
 use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Ramsey\Collection\Collection;
 
 class BookService
 {

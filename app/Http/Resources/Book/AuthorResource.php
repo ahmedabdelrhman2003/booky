@@ -18,7 +18,8 @@ class AuthorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => $this->getfirstMedia(MediaTypes::AUTHOR_PICTURE->value)
+            'bio' => $this->bio,
+            'image' => $this->getFirstMediaUrl(MediaTypes::AUTHOR_PICTURE->value)
         ];
     }
 }

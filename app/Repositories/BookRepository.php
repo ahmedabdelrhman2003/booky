@@ -12,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class BookRepository implements BookRepositoryInterface
 {
 
-    public function findById($id): Book
+    public function findById($id): ?Book
     {
         return Book::active()->approved()->where('id', $id)->with('author', 'categories')->first();
     }
@@ -24,9 +24,12 @@ class BookRepository implements BookRepositoryInterface
                 $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
             })
-            ->when($dto->getCategoryId(), fn(Builder $query, $categoryId) => $query->whereHas('categories', fn($q) => $q->where('categories.id', $categoryId))
+            ->when($dto->getCategoryId(), fn(Builder $query, $id) => $query->whereHas('categories', fn($q) => $q->where('categories.id', $id))
+            )
+            ->when($dto->getAuthorId(), fn(Builder $query, $id) => $query->where('author_id', $id)
+            )
+            ->when($dto->getLanguage(), fn(Builder $query, $id) => $query->where('language', $dto->getLanguage())
             );
-
         return $dto->isPaginated() ? $books->paginate($dto->getLimit()) : $books->get();
 
     }
