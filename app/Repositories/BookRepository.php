@@ -33,4 +33,14 @@ class BookRepository implements BookRepositoryInterface
         return $dto->isPaginated() ? $books->paginate($dto->getLimit()) : $books->get();
 
     }
+
+    public function getByCategories(Book $book) :Collection
+    {
+        $ids = $book->categories->pluck('id')->toArray();
+        return Book::query()->active()->approved()->where('id','!=',$book->id)
+            ->whereHas('categories', function (Builder $query) use ($ids) {
+                $query->whereIn('categories.id', $ids);
+            })->inRandomOrder(5)->get();
+    }
+
 }
