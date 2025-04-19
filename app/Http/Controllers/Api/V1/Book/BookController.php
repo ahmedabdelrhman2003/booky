@@ -49,5 +49,16 @@ class BookController extends Controller
         }
     }
 
+    public function favToggle(GetBookRequest $request, int $id): JsonResponse
+    {
+        try {
+             $this->bookService->favToggle($id);
+            return (new DataResponse(null,'favorite list updated successfully'))->toJson();
+        } catch (Throwable $exception) {
+            Log::error('error in favToggle function ', [$exception->getMessage()]);
+            return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();
+        }
+    }
+
 
 }

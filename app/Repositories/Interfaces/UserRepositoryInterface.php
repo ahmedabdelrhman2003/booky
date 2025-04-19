@@ -6,6 +6,7 @@ use App\DTOs\V1\User\Auth\LoginSocialDTO;
 use App\DTOs\V1\User\Auth\RegisterUserDTO;
 use App\DTOs\V1\User\Profile\UpdateProfileDTO;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 interface UserRepositoryInterface
@@ -29,5 +30,6 @@ interface UserRepositoryInterface
 
     public function createUserSocial(LoginSocialDTO $dto): ?User;
 
+    public function getFavBooks(int $id): Collection;
 
 }

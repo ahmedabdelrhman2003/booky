@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -66,6 +67,16 @@ class Book extends Model implements HasMedia
     public function scopeApproved(Builder $query): void
     {
         $query->where('status', BookStatusEnum::APPROVED->value);
+    }
+
+    public function favUsers(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'favourable')->withTimestamps();
+    }
+
+    public function isFavorite(): bool
+    {
+        return $this->favUsers()->where('user_id', auth('api')->id())->exists();
     }
 
 }
