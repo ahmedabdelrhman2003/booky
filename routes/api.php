@@ -37,8 +37,12 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api']], function (){
     Route::group(['prefix' => 'books'], function (){
+        Route::get('/favorites', [AuthenticationController::class, 'favBooks']);
         Route::get('/', [BookController::class, 'index']);
         Route::get('/{id}', [BookController::class, 'show']);
+        Route::put('/favorites/{id}', [BookController::class, 'favToggle']);
+
+
     });
         Route::get('/lookups', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'index']);
 

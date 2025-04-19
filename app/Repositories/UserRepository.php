@@ -5,11 +5,11 @@ namespace App\Repositories;
 use App\DTOs\V1\User\Auth\LoginSocialDTO;
 use App\DTOs\V1\User\Profile\UpdateProfileDTO;
 use App\Enum\MediaTypes;
+use App\Models\Book;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -68,4 +68,9 @@ class UserRepository implements UserRepositoryInterface
         return User::create(['first_name' => $dto->getFirstName(), 'last_name' => $dto->getLastName(), 'email' => $dto->getEmail(), 'password' => $dto->getPassword()]);
     }
 
+    public function getFavBooks(int $id): Collection
+    {
+        return User::find($id)->favBooks()->active()
+            ->with(['author', 'categories'])->get();
+    }
 }

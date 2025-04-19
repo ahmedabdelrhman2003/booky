@@ -16,5 +16,7 @@ interface BookRepositoryInterface
 
     public function getByCategories(Book $book): Collection;
 
+    public function favToggle(int $id,int $userId);
+
 
 }

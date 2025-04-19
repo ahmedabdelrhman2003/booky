@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Enum\MediaTypes;
+use App\Enums\MediaTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -53,24 +54,29 @@ class User extends Authenticatable implements HasMedia
         'is_social'
     ];
 
-    public function setPasswordAttribute($value)
+    public function setPasswordAttribute($value): void
     {
         $this->attributes['password'] = Hash::make($value);
     }
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaTypes::PROFILE_PICTURE->value)->singleFile();
+        $this->addMediaCollection(MediaTypes::AUTHOR_PICTURE->value)->singleFile();
     }
 
-    public function getAccountVerifiedAttribute()
+    public function getAccountVerifiedAttribute(): bool
     {
         return $this->email_verified_at !== null;
     }
 
-    public function getIsSocialAttribute()
+    public function getIsSocialAttribute(): bool
     {
         return $this->password === null;
+    }
+
+    public function favBooks(): MorphToMany
+    {
+        return $this->morphedByMany(Book::class, 'favourable')->where('favourable_type', Book::class)->withTimestamps();
     }
 
 

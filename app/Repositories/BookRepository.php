@@ -43,4 +43,9 @@ class BookRepository implements BookRepositoryInterface
             })->inRandomOrder(5)->get();
     }
 
+    public function favToggle(int $id, int $userId)
+    {
+        $book = Book::active()->find($id);
+        return $book->favUsers()->toggle($userId);
+    }
 }

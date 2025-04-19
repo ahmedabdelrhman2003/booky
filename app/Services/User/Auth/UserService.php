@@ -147,4 +147,10 @@ class UserService
         throw new \Exception('different social type');
     }
 
+    public function getFavBooks()
+    {
+        $id = auth('api')->id();
+        return $this->userRepository->getFavBooks($id);
+    }
+
 }

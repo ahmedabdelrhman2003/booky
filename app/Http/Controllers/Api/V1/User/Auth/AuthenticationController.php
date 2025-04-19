@@ -14,6 +14,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RequestResetPasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SocialLoginRequest;
+use App\Http\Resources\Book\BookCollection;
 use App\Http\Resources\User\UserResource;
 use App\Http\Responses\DataResponse;
 use App\Http\Responses\ErrorResponse;
@@ -145,6 +146,18 @@ class AuthenticationController extends Controller
             return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();
         }
 
+    }
+
+    public function favBooks(): JsonResponse
+    {
+        try {
+           $books =  $this->userService->getFavBooks();
+           $collection = new BookCollection($books);
+            return (new DataResponse($collection))->toJson();
+        } catch (Throwable $exception) {
+            Log::error('error in favBooks function ', [$exception->getMessage()]);
+            return (new ErrorResponse('something_went_wrong'))->toJson();
+        }
     }
 
 }

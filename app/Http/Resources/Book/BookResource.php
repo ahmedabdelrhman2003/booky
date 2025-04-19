@@ -20,6 +20,7 @@ class BookResource extends JsonResource
             'pages' => $this->pages,
             'language' => $this->language,
             'is_purchased' => rand(0,1), //TODO: IMPLEMENT PURCHASED
+            'is_favorite' => $this->isFavorite(),
             'categories' => CategoryResource::collection($this->categories),
             'author' => new AuthorResource($this->author),
         ];

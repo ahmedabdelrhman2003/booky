@@ -31,4 +31,11 @@ class BookService
         return $this->bookRepository->getByCategories($book);
     }
 
+    public function favToggle(int $id)
+    {
+        $userId = auth('api')->id();
+        return $this->bookRepository->favToggle($id,$userId);
+
+    }
+
 }
