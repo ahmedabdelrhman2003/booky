@@ -14,4 +14,7 @@ interface BookRepositoryInterface
 
     public function all(SetUpDTO $dto): LengthAwarePaginator|Collection;
 
+    public function getByCategories(Book $book): Collection;
+
+
 }

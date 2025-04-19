@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\AllBooksRequest;
 use App\Http\Requests\Book\GetBookRequest;
 use App\Http\Resources\Book\BookCollection;
+use App\Http\Resources\Book\ShowBookDetailsCollection;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Responses\DataResponse;
 use App\Http\Responses\ErrorResponse;
@@ -38,9 +39,10 @@ class BookController extends Controller
     public function show(GetBookRequest $request, int $id): JsonResponse
     {
         try {
-            $books = $this->bookService->findById($id);
-            $resource = new BookResource($books);
-            return (new DataResponse($resource))->toJson();
+            $book = $this->bookService->findById($id);
+            $suggestedBooks = $this->bookService->getSuggestedBooks($book);
+            $collection = new ShowBookDetailsCollection($book,$suggestedBooks);
+            return (new DataResponse($collection))->toJson();
         } catch (Throwable $exception) {
             Log::error('error in show books function ', [$exception->getMessage()]);
             return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();

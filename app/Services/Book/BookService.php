@@ -26,4 +26,9 @@ class BookService
         return $this->bookRepository->findById($id);
     }
 
+    public function getSuggestedBooks(Book $book): Collection
+    {
+        return $this->bookRepository->getByCategories($book);
+    }
+
 }
