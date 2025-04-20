@@ -62,7 +62,7 @@ class Author extends Authenticatable implements HasMedia,FilamentUser
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('author-image')
+        $this->addMediaCollection('author-image')->useDisk('s3')
             ->registerMediaConversions(function (Media $media) {
                 $this
                     ->addMediaConversion('thumb')
