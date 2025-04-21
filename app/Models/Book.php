@@ -63,6 +63,9 @@ class Book extends Model implements HasMedia
     {
         $this->addMediaCollection('book-cover')
             ->useDisk('s3');
+
+        $this->addMediaCollection('audio')
+            ->useDisk('s3');
     }
 
     public function scopeApproved(Builder $query): void

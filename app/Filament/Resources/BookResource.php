@@ -61,7 +61,7 @@ class BookResource extends Resource
                     ->acceptedFileTypes(['application/pdf'])->maxSize(10000)->collection('book')->required(),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('audio')->label('audio book')->downloadable()
-                  ->maxSize(10000)->collection('audio'),
+                  ->maxSize(10000)->collection('audio')->disk('s3'),
 
                 ])->columns(2)->columnSpan(2)
 

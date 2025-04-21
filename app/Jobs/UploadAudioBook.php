@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UploadAudioBook implements ShouldQueue
 {
@@ -32,8 +33,13 @@ class UploadAudioBook implements ShouldQueue
         try {
             $pdfMedia = $this->book->getFirstMedia('book');
             if ($pdfMedia) {
-                $pdfFile = file_get_contents($pdfMedia->getPath());
-
+                $pdfFile = Storage::disk('s3')->get($pdfMedia->getPath());
+                if (!$pdfFile) {
+                    Log::error('Failed to retrieve the PDF file from S3.', [
+                        'file_name' => $pdfMedia->file_name,
+                    ]);
+                    return;
+                }
                 $response = Http::attach('file', $pdfFile, $pdfMedia->file_name)
                     ->timeout(50000)
                     ->post('http://127.0.0.2:8000/textSpeech/upload/', ['language' => 'en']);
@@ -48,17 +54,25 @@ class UploadAudioBook implements ShouldQueue
                 if ($response->successful()) {
                     $audio_url = $response->json('audio_path');
 
-                    if (!$audio_url) {
-                        Log::error('The response does not contain an audio path.', [
-                            'response_body' => $response->body(),
+                    $audioContent = Http::timeout(50000)->get($audio_url);
+
+                    if (!$audioContent->successful()) {
+                        Log::error('Failed to download the audio file from local server.', [
+                            'audio_url' => $audio_url,
+                            'status' => $audioContent->status(),
                         ]);
                         return;
                     }
 
+                    $tempPath = storage_path('app/temp_audio.mp3');
+                    file_put_contents($tempPath, $audioContent->body());
+
                     $this->book
-                        ->addMediaFromUrl($audio_url)
+                        ->addMedia($tempPath)
+                        ->usingFileName('audio_' . uniqid() . '.mp3')
                         ->toMediaCollection('audio');
 
+                    unlink($tempPath);
                     Log::info('Success: The audio file was uploaded successfully.', [
                         'audio_url' => $audio_url,
                     ]);
