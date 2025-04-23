@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\DTOs\V1\User\Auth\LoginSocialDTO;
-use App\DTOs\V1\User\Profile\UpdateProfileDTO;
+use App\DTOs\V1\User\Auth\UpdateProfileDTO;
 use App\Enum\MediaTypes;
 use App\Models\Book;
 use App\Models\User;
@@ -18,9 +18,15 @@ class UserRepository implements UserRepositoryInterface
         return User::where('id',$id)->update(['email_verified_at' => now()]);
     }
 
-    public function updateProfile(UpdateProfileDTO $dto, $id)
+    public function updateProfile(UpdateProfileDTO $dto, $id): User
     {
-        $data = array_filter(['first_name' => $dto->getFirstName(), 'last_name' => $dto->getLastName()]);
+        $data = array_filter([
+            'first_name'  => $dto->getFirstName(),
+            'last_name'   => $dto->getLastName(),
+            'phone'       => $dto->getPhone(),
+            'gender'      => $dto->getGender(),
+            'birth_date'  => $dto->getBirthDate(),
+        ]);
         $user = User::find($id);
         $user->update($data);
         return $user->refresh();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Enums\MediaTypes;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -19,8 +20,10 @@ class UserResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
-            'image' => null,
-            // new MediaResource($this->getFirstMedia(MediaTypes::PROFILE_PICTURE->value)) ,
+            'image' => $this->hasMedia(MediaTypes::USER_PICTURE->value) ? $this->getFirstMediaUrl(MediaTypes::USER_PICTURE->value) : null,
+            'gender' => $this->gender,
+            'birth_date' => $this->birth_date,
+            'phone' => $this->phone,
             'access_token' => $this->when($this->token, $this->token),
         ];
     }

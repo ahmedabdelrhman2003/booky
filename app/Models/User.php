@@ -27,7 +27,10 @@ class User extends Authenticatable implements HasMedia
         'password',
         'email',
         'social_type',
-        'social_id'
+        'social_id',
+        'phone',
+        'birth_date',
+        'gender'
     ];
 
     /**
@@ -61,7 +64,7 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaTypes::AUTHOR_PICTURE->value)->singleFile();
+        $this->addMediaCollection(MediaTypes::AUTHOR_PICTURE->value)->useDisk('s3')->singleFile();
     }
 
     public function getAccountVerifiedAttribute(): bool

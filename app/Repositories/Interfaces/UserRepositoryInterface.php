@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 use App\DTOs\V1\User\Auth\LoginSocialDTO;
 use App\DTOs\V1\User\Auth\RegisterUserDTO;
-use App\DTOs\V1\User\Profile\UpdateProfileDTO;
+use App\DTOs\V1\User\Auth\UpdateProfileDTO;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +17,7 @@ interface UserRepositoryInterface
 
     public function findByEmail(string $email);
 
-    public function updateProfile(UpdateProfileDTO $dto, $id);
+    public function updateProfile(UpdateProfileDTO $dto, $id):User;
 
     public function findById(int $id);
     public function checkOldPassword($oldPassword, $newPassword): bool;
