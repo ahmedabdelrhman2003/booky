@@ -6,9 +6,9 @@ use App\DTOs\V1\User\Auth\LoginSocialDTO;
 use App\DTOs\V1\User\Auth\LoginUserDTO;
 use App\DTOs\V1\User\Auth\RegisterUserDTO;
 use App\DTOs\V1\User\Auth\ResetPasswordDTO;
+use App\DTOs\V1\User\Auth\UpdateProfileDTO;
 use App\DTOs\V1\User\Profile\UpdatePasswordDTO;
-use App\DTOs\V1\User\Profile\UpdateProfileDTO;
-use App\Enum\MediaTypes;
+use App\Enums\MediaTypes;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\UserVerificationRepositoryInterface;
@@ -101,17 +101,19 @@ class UserService
         return auth('api')->user();
     }
 
-    public function updateProfile(UpdateProfileDTO $dto)
+    public function updateProfile(UpdateProfileDTO $dto): User
     {
         $user = $this->userRepository->updateProfile($dto, auth('api')->id());
         try {
             if ($dto->getImage()) {
-                $this->uploadFileService->addMedia($user, $dto->getImage(), MediaTypes::PROFILE_PICTURE->value);
+                $user
+                    ->addMedia($dto->getImage())
+                    ->toMediaCollection(MediaTypes::USER_PICTURE->value);
             }
+            return $user;
         } catch (\Exception $e) {
 
             Log::error('failed to upload image  with error: ' . $e->getMessage());
-
         }
         return $user;
 

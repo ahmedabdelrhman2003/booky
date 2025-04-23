@@ -8,6 +8,7 @@ enum MediaTypes : string
     case BOOK_COVER = 'book-cover';
     case BOOK_PDF = 'book';
     case BOOK_AUDIO = 'audio';
+    case USER_PICTURE = 'user-image';
 
 
 }

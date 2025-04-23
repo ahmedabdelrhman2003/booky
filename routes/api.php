@@ -44,6 +44,7 @@ Route::group(['prefix' => 'v1'], function () {
     });
         Route::post('/contact-us', [\App\Http\Controllers\Api\V1\ContactUs\ContactUsController::class, 'store']);
         Route::get('/lookups', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'index']);
+        Route::put('/update-profile', [AuthenticationController::class, 'updateProfile'])->middleware("throttle:10,1");
 
     });
 
