@@ -7,6 +7,7 @@ use App\DTOs\V1\User\Auth\LoginUserDTO;
 use App\DTOs\V1\User\Auth\RegisterUserDTO;
 use App\DTOs\V1\User\Auth\ReSendOtpDTO;
 use App\DTOs\V1\User\Auth\ResetPasswordDTO;
+use App\DTOs\V1\User\Auth\UpdateProfileDTO;
 use App\Enums\OTPActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -14,6 +15,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RequestResetPasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SocialLoginRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\Book\BookCollection;
 use App\Http\Resources\User\UserResource;
 use App\Http\Responses\DataResponse;
@@ -24,6 +26,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -156,6 +159,19 @@ class AuthenticationController extends Controller
             return (new DataResponse($collection))->toJson();
         } catch (Throwable $exception) {
             Log::error('error in favBooks function ', [$exception->getMessage()]);
+            return (new ErrorResponse('something_went_wrong'))->toJson();
+        }
+    }
+
+    public function updateProfile(UpdateProfileRequest $request): JsonResponse
+    {
+        try {
+            $dto = new UpdateProfileDTO($request->validated());
+            $user =  $this->userService->updateProfile($dto);
+            $resource = new UserResource($user);
+            return (new DataResponse($resource))->toJson();
+        } catch (Throwable $exception) {
+            Log::error('error in updateProfile function ', [$exception->getMessage()]);
             return (new ErrorResponse('something_went_wrong'))->toJson();
         }
     }
