@@ -40,4 +40,15 @@ class LookUpController extends Controller
         }
     }
 
+    public function faqs(): JsonResponse
+    {
+        try {
+
+            return (new DataResponse())->toJson();
+        } catch (Throwable $exception) {
+            Log::error('error in index lookups function ', [$exception->getMessage()]);
+            return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();
+        }
+    }
+
 }
