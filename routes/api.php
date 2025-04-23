@@ -41,11 +41,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', [BookController::class, 'index']);
         Route::get('/{id}', [BookController::class, 'show']);
         Route::put('/favorites/{id}', [BookController::class, 'favToggle']);
-
-
     });
+        Route::post('/contact-us', [\App\Http\Controllers\Api\V1\ContactUs\ContactUsController::class, 'store']);
         Route::get('/lookups', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'index']);
         Route::put('/update-profile', [AuthenticationController::class, 'updateProfile'])->middleware("throttle:10,1");
+        Route::get('/faqs', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'faqs']);
 
     });
 
