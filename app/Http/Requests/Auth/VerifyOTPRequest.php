@@ -22,8 +22,8 @@ class VerifyOTPRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'verification_token'    => 'required',
-            'code'                  => 'required'
+            'verification_token'    => 'required|max:250',
+            'code'                  => 'required|max:250'
         ];
     }
 }

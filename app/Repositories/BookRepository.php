@@ -21,8 +21,10 @@ class BookRepository implements BookRepositoryInterface
     {
         $books = Book::query()->active()->approved()->with('author', 'categories')
             ->when($dto->getSearch(), function (Builder $query, $search) {
-                $query->where('title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                });
             })
             ->when($dto->getCategoryId(), fn(Builder $query, $id) => $query->whereHas('categories', fn($q) => $q->where('categories.id', $id))
             )

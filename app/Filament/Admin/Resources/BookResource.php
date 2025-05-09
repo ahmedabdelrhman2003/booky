@@ -46,12 +46,15 @@ class BookResource extends Resource
                 Tables\Columns\BooleanColumn::make('activation')
                     ->label('Active'),
 
-                TextColumn::make('status')->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'success' => BookStatusEnum::APPROVED->value,
-                        'danger' => BookStatusEnum::REJECTED->value,
-                        'warning' => BookStatusEnum::PENDING->value,
-                    }) ->sortable()->searchable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (BookStatusEnum $state): string => match ($state) {
+                        BookStatusEnum::APPROVED => 'success',
+                        BookStatusEnum::REJECTED => 'danger',
+                        BookStatusEnum::PENDING => 'warning',
+                    })
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('categories')
                     ->label('Categories')
@@ -71,10 +74,16 @@ class BookResource extends Resource
                         1 => 'Active',
                         0 => 'Inactive',
                     ]),
+
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(collect(BookStatusEnum::cases())->mapWithKeys(fn($case) => [
-                        $case->value => $case->getLabel(),
-                    ])->toArray())
+                    ->options(
+                        collect(BookStatusEnum::cases())
+                            ->mapWithKeys(fn ($case) => [
+                                $case->value => $case->getLabel(),
+                            ])
+                            ->toArray()
+                    ),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
 
@@ -94,7 +103,7 @@ class BookResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])]);
+            ]);
     }
 
     public static function getRelations(): array

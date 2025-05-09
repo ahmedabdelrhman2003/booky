@@ -6,8 +6,8 @@ use Illuminate\Http\UploadedFile;
 
 class UpdateProfileDTO
 {
-    protected ?string $first_name;
-    protected ?string $last_name;
+    protected ?string $first_name =null;
+    protected ?string $last_name = null;
     protected ?string $phone = null;
     protected ?string $gender= null;
     protected ?string $birth_date = null;

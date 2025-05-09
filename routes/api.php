@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\User\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\User\Auth\OtpController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'v1'], function () {
+
+Route::group(['prefix' => 'v1','middleware' => ['api', 'throttle']], function () {
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', [AuthenticationController::class, 'register'])->middleware(["throttle:20,1"]);
-        Route::post('/login', [AuthenticationController::class, 'login'])->middleware(["throttle:20,1"]);
+        Route::post('/login', [AuthenticationController::class, 'login']);
         Route::post('/social-login', [AuthenticationController::class, 'socialLogin']);
         Route::post('/reset-password', [AuthenticationController::class, 'resetPassword']);
         Route::post('/request-reset-password', [AuthenticationController::class, 'requestResetPassword']);
@@ -44,10 +46,13 @@ Route::group(['prefix' => 'v1'], function () {
     });
         Route::post('/contact-us', [\App\Http\Controllers\Api\V1\ContactUs\ContactUsController::class, 'store']);
         Route::get('/lookups', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'index']);
-        Route::put('/update-profile', [AuthenticationController::class, 'updateProfile'])->middleware("throttle:10,1");
+        Route::post('/update-profile', [AuthenticationController::class, 'updateProfile'])->middleware("throttle:10,1");
         Route::get('/faqs', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'faqs']);
 
     });
 
 });
+
+
+
 
