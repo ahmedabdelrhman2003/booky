@@ -83,4 +83,9 @@ class Book extends Model implements HasMedia
         return $this->favUsers()->where('user_id', auth('api')->id())->exists();
     }
 
+    public function isPurchased(): bool
+    {
+        return rand(0, 1);
+    }
+
 }

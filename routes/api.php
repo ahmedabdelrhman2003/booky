@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Author\AuthorController;
 use App\Http\Controllers\Api\V1\Book\BookController;
 use App\Http\Controllers\Api\V1\User\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\User\Auth\OtpController;
@@ -44,6 +45,9 @@ Route::group(['prefix' => 'v1','middleware' => ['api', 'throttle']], function ()
         Route::get('/{id}', [BookController::class, 'show']);
         Route::put('/favorites/{id}', [BookController::class, 'favToggle']);
     });
+        Route::group(['prefix' => 'authors'], function (){
+            Route::get('/', [AuthorController::class, 'index']);
+        });
         Route::post('/contact-us', [\App\Http\Controllers\Api\V1\ContactUs\ContactUsController::class, 'store']);
         Route::get('/lookups', [\App\Http\Controllers\Api\V1\LookUps\LookUpController::class, 'index']);
         Route::post('/update-profile', [AuthenticationController::class, 'updateProfile'])->middleware("throttle:10,1");

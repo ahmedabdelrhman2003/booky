@@ -70,4 +70,9 @@ class Author extends Authenticatable implements HasMedia,FilamentUser
                     ->height(50);
             });
     }
+
+    public function scopeHasActiveBooks($query)
+    {
+        $query->whereHas('books', fn($q) => $q->active()->approved());
+    }
 }
