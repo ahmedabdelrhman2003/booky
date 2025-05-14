@@ -25,15 +25,17 @@ class BookRepository implements BookRepositoryInterface
                     $q->where('title', 'like', "%$search%")
                         ->orWhere('description', 'like', "%$search%");
                 });
-            })
+            }
+            )
             ->when($dto->getCategoryId(), fn(Builder $query, $id) => $query->whereHas('categories', fn($q) => $q->where('categories.id', $id))
             )
             ->when($dto->getAuthorId(), fn(Builder $query, $id) => $query->where('author_id', $id)
             )
             ->when($dto->getLanguage(), fn(Builder $query, $id) => $query->where('language', $dto->getLanguage())
+            )
+            ->when($dto->getPurchased(), fn(Builder $query, $id) => $query->purchased()
             );
         return $dto->isPaginated() ? $books->paginate($dto->getLimit()) : $books->get();
-
     }
 
     public function getByCategories(Book $book) :Collection

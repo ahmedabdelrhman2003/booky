@@ -31,4 +31,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'paymob' => [
+        'api_key' => env('PAYMOB_API_KEY'),
+        'secret_key' => env('PAYMOB_SECRET_KEY'),
+        'public_key' => env('PAYMOB_PUBLIC_KEY'),
+        'base_url' => env('PAYMOB_BASE_URL'),
+        'integration_id' => env('PAYMOB_INTEGRATION_ID'),
+        'currency' => env('CURRENCY', 'EGP'),
+    ],
+
 ];

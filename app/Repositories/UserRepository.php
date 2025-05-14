@@ -71,7 +71,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function create($dto)
     {
-        return User::create(['first_name' => $dto->getFirstName(), 'last_name' => $dto->getLastName(), 'email' => $dto->getEmail(), 'password' => $dto->getPassword()]);
+        return User::create(['first_name' => $dto->getFirstName(), 'last_name' => $dto->getLastName(), 'email' => $dto->getEmail(), 'password' => $dto->getPassword(),'phone' => $dto->getPhone()]);
     }
 
     public function getFavBooks(int $id): Collection
