@@ -33,6 +33,8 @@ class AllBooksRequest extends FormRequest
             'filter.author_id' => ['nullable','integer','exists:authors,id'],
             'filter.language' => ['nullable','string',new Enum(BookLangEnum::class)],
             'filter.search' => ['nullable', 'string', 'min:1', 'max:30'],
+            'filter.purchased' => ['nullable', 'boolean'],
+
         ];
     }
 }

@@ -64,7 +64,7 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaTypes::AUTHOR_PICTURE->value)->useDisk('s3')->singleFile();
+        $this->addMediaCollection(MediaTypes::USER_PICTURE->value)->useDisk('s3')->singleFile();
     }
 
     public function getAccountVerifiedAttribute(): bool

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BookStatusEnum;
+use App\Enums\OrderTypesEnum;
 use App\Observers\BookObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,9 +55,9 @@ class Book extends Model implements HasMedia
         return $this->belongsToMany(Category::class, 'books_categories');
     }
 
-    public function scopeActive(Builder $query): void
+    public function scopeActive(Builder $query): Builder
     {
-        $query->where('activation', 1);
+        return $query->where('activation', 1);
     }
 
     public function registerMediaCollections(): void
@@ -68,11 +69,6 @@ class Book extends Model implements HasMedia
             ->useDisk('s3');
     }
 
-    public function scopeApproved(Builder $query): void
-    {
-        $query->where('status', BookStatusEnum::APPROVED->value);
-    }
-
     public function favUsers(): MorphToMany
     {
         return $this->morphToMany(User::class, 'favourable')->withTimestamps();
@@ -81,6 +77,32 @@ class Book extends Model implements HasMedia
     public function isFavorite(): bool
     {
         return $this->favUsers()->where('user_id', auth('api')->id())->exists();
+    }
+
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('status', BookStatusEnum::APPROVED->value);
+    }
+
+    public function isPurchased(): bool
+    {
+        return $this->orders()
+            ->where('user_id', auth('api')->id())
+            ->where('status', OrderTypesEnum::PAID->value)
+            ->exists();
+    }
+
+
+    public function scopePurchased(Builder $query): Builder
+    {
+        return $query->whereHas('orders', function ($query) {
+            $query->where('user_id',  auth('api')->id())->paid();
+        });
     }
 
 }

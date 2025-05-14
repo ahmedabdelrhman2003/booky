@@ -8,6 +8,7 @@ class RegisterUserDTO
     protected ?string $first_name;
     protected ?string $last_name;
     protected ?string $email;
+    protected ?string $phone;
     protected ?string $password;
 
     public function __construct(public array $data)
@@ -37,11 +38,17 @@ class RegisterUserDTO
         return $this->password;
     }
 
+    final public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
     final protected function map(array $data): bool
     {
         $this->first_name = $data['first_name'];
         $this->last_name = $data['last_name'];
         $this->email = $data['email'];
+        $this->phone = $data['phone'];
         $this->password = $data['password'];
         return true;
     }

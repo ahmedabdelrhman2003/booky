@@ -108,7 +108,7 @@ class UserService
             if ($dto->getImage()) {
                 $user
                     ->addMedia($dto->getImage())
-                    ->toMediaCollection(MediaTypes::USER_PICTURE->value);
+                    ->toMediaCollection(MediaTypes::USER_PICTURE->value,'s3');
             }
             return $user;
         } catch (\Exception $e) {

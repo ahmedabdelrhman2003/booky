@@ -60,4 +60,10 @@ class SetUpDTO
     {
         return $this->limit;
     }
+
+    public function getPurchased(): ?bool
+    {
+        return $this->filters['purchased'] ?? null;
+
+    }
 }
