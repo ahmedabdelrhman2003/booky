@@ -23,6 +23,10 @@ class BookResource extends JsonResource
             'is_favorite' => $this->isFavorite(),
             'categories' => CategoryResource::collection($this->categories),
             'author' => new AuthorResource($this->author),
+            $this->mergeWhen($this->isPurchased(), [
+                'record' => $this->getFirstMediaUrl(MediaTypes::BOOK_AUDIO->value),
+                'pdf' => $this->getFirstMediaUrl(MediaTypes::BOOK_PDF->value),
+            ]),
         ];
     }
 }

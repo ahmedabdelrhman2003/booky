@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\DTOs\V1\User\Book\SetUpDTO;
 use App\Models\Book;
+use App\Models\Order;
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -51,5 +52,12 @@ class BookRepository implements BookRepositoryInterface
     {
         $book = Book::active()->find($id);
         return $book->favUsers()->toggle($userId);
+    }
+
+    public function rate(int $id, int $userId,int $rate)
+    {
+        return Order::where('book_id', $id)
+            ->where('user_id', $userId)->paid()
+            ->update(['rate'=>$rate]);
     }
 }
