@@ -2,14 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\BookLangEnum;
 use App\Enums\BookStatusEnum;
 use App\Filament\Resources\BookResource\Pages;
 use App\Filament\Resources\BookResource\RelationManagers;
 use App\Jobs\UploadAudioBook;
 use App\Models\Blog;
 use App\Models\Book;
-use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -31,21 +29,18 @@ class BookResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make()->schema([
-                Forms\Components\TextInput::make('title')->required()->maxLength(255)->columnSpan(2),
+                    Forms\Components\TextInput::make('title')->required()->maxLength(30)->columnSpan(2),
 
-                Forms\Components\RichEditor::make('description')->maxLength(65365)->required()->columnSpan(2),
+                    Forms\Components\TextInput::make('description')->required()->maxLength(255)->columnSpan(2),
 
                 Forms\Components\TextInput::make('pages')
                     ->label('number of pages')->required()->integer(),
 
-                Forms\Components\TextInput::make('price_before_commission')->label('Price')->required()->integer(),
+                Forms\Components\TextInput::make('price_before_commission')->label('Price')->required(),
 
-                    Select::make('categories')
-                        ->relationship('categories', 'name') // Relates to categories
-                        ->multiple()
-                        ->preload()
-                        ->searchable()
-                        ->required(),
+                    Select::make('categories')->relationship('categories', 'name') // Relates to categories
+                    ->multiple()->preload()
+                        ->searchable()->required(),
 
                     Select::make('language')->required()
                         ->options([
@@ -58,10 +53,17 @@ class BookResource extends Resource
                     ->collection('book-cover')->required()->label('book cover'),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('book')->openable()->downloadable()
-                    ->acceptedFileTypes(['application/pdf'])->maxSize(10000)->collection('book')->required(),
+                    ->acceptedFileTypes(['application/pdf'])->maxSize(10000)->collection('book')->required()
+                    ->afterStateUpdated(function ($state, $component) {
+                        $record = $component->getRecord();
+                        if ($record) {
+                            UploadAudioBook::dispatch($record);
+                        }
+
+                    }),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('audio')->label('audio book')->downloadable()
-                  ->maxSize(10000)->collection('audio')->disk('s3'),
+                    ->maxSize(10000)->collection('audio')->disk('s3')->disabled(),
 
                 ])->columns(2)->columnSpan(2)
 
@@ -82,11 +84,22 @@ class BookResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+
                 Tables\Columns\BooleanColumn::make('activation')
                     ->label('Active'),
 
-            TextColumn::make('status')->badge()
-                ->sortable()->searchable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match (BookStatusEnum::from($state)) {
+                        BookStatusEnum::APPROVED => 'success',
+                        BookStatusEnum::REJECTED => 'danger',
+                        BookStatusEnum::PENDING => 'warning',
+                    })
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('rate')
+                    ->getStateUsing(fn(Book $record) => number_format($record->rate(), 1))
+                    ->sortable(),
 
                 TextColumn::make('categories')
                     ->label('Categories')

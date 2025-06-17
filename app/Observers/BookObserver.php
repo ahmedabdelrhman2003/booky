@@ -12,7 +12,6 @@ class BookObserver
      */
     public function created(Book $book): void
     {
-            UploadAudioBook::dispatch($book);
 
     }
 

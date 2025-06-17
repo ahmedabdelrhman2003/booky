@@ -39,5 +39,8 @@ return [
         'integration_id' => env('PAYMOB_INTEGRATION_ID'),
         'currency' => env('CURRENCY', 'EGP'),
     ],
+    'tts' => [
+        'url' => env('TTS_URL')
+    ]
 
 ];

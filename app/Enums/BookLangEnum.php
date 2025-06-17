@@ -17,4 +17,12 @@ enum  BookLangEnum: string implements HasLabel
         return array_map(fn($enum) => $enum->value, self::cases());
     }
 
+    public function shortCode(): string
+    {
+        return match ($this) {
+            self::ENGLISH => 'en',
+            self::ARABIC => 'ar',
+        };
+    }
+
 }

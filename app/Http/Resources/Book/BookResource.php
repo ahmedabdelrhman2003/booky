@@ -15,7 +15,8 @@ class BookResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'price' => $this->price,
-            'rate' => 5.0, //TODO: IMPLEMENT RATE
+            'rate' => (int)round($this->rate()),
+            'is_rated' => (boolean)$this->isRated(),
             'cover' => $this->getFirstMediaUrl(MediaTypes::BOOK_COVER->value),
             'pages' => $this->pages,
             'language' => $this->language,

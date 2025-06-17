@@ -10,7 +10,7 @@ class Withdrawal extends Model
     use HasFactory;
     protected $fillable = ['author_id', 'amount', 'status'];
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Author::class);
     }

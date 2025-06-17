@@ -31,6 +31,7 @@ class Author extends Authenticatable implements HasMedia,FilamentUser
         'password',
         'bio',
         'iban',
+        'wallet'
 
     ];
 

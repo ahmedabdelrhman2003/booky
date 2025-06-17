@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\BookResource;
 use App\Filament\Resources\AuthorResource\Pages\auth\Register;
 use App\Filament\Resources\BookResource\Pages\auth\EditProfile;
 use App\Filament\Resources\BookResource\Pages\WalletPage;
@@ -45,7 +46,7 @@ class AuthorPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+//                Widgets\AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
