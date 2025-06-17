@@ -38,4 +38,10 @@ class BookService
 
     }
 
+    public function rate(int $id,int $rate)
+    {
+        $userId = auth('api')->id();
+        return $this->bookRepository->rate($id,$userId,$rate);
+    }
+
 }

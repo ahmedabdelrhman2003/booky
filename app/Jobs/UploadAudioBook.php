@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\BookLangEnum;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Bus\Queueable;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 class UploadAudioBook implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $backoff = 3;
 
     /**
      * Create a new job instance.
@@ -42,7 +45,7 @@ class UploadAudioBook implements ShouldQueue
                 }
                 $response = Http::attach('file', $pdfFile, $pdfMedia->file_name)
                     ->timeout(50000)
-                    ->post('http://127.0.0.2:8000/textSpeech/upload/', ['language' => 'en']);
+                    ->post(config('services.tts.url').'/textSpeech/upload/', [ 'language' => BookLangEnum::from($this->book->language)->shortCode()]);
 
                 Log::info('Sending request to text-to-speech server', [
                     'url' => 'http://127.0.0.2:8000/textSpeech/upload/',

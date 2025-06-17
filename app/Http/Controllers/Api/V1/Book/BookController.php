@@ -6,9 +6,9 @@ use App\DTOs\V1\User\Book\SetUpDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\AllBooksRequest;
 use App\Http\Requests\Book\GetBookRequest;
+use App\Http\Requests\Book\RateBookRequest;
 use App\Http\Resources\Book\BookCollection;
 use App\Http\Resources\Book\ShowBookDetailsCollection;
-use App\Http\Resources\Book\BookResource;
 use App\Http\Responses\DataResponse;
 use App\Http\Responses\ErrorResponse;
 use App\Services\Book\BookService;
@@ -56,6 +56,17 @@ class BookController extends Controller
             return (new DataResponse(null,'favorite list updated successfully'))->toJson();
         } catch (Throwable $exception) {
             Log::error('error in favToggle function ', [$exception->getMessage()]);
+            return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();
+        }
+    }
+
+    public function rate(RateBookRequest $request, int $id): JsonResponse
+    {
+        try {
+            $this->bookService->rate($id, $request->rate);
+            return (new DataResponse(message: 'your rate saved successfully'))->toJson();
+        } catch (Throwable $exception) {
+            Log::error('error in rate books function ', [$exception->getMessage()]);
             return (new ErrorResponse('Oops something went wrong -_- !'))->toJson();
         }
     }

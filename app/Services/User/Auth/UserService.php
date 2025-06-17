@@ -76,20 +76,6 @@ class UserService
         return $user;
     }
 
-    public function changePassword(UpdatePasswordDTO $dto)
-    {
-        $user = auth('api')->user();
-
-        if (!Hash::check($dto->getOldPassword(), $user->password)) {
-            throw new WrongPasswordException();
-        }
-
-        if ($this->userRepository->checkOldPassword($user->password, $dto->getPassword())){
-            throw new CannotUseOldPasswordException();
-        }
-
-        return $this->userRepository->resetPassword($user, $dto->getPassword());
-    }
 
     public function generateToken(User $user): string
     {

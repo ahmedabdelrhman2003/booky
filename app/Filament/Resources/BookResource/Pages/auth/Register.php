@@ -36,10 +36,8 @@ class Register extends BaseRegister
 
     protected function getBioFormComponent(): Component
     {
-        return RichEditor::make('bio')->maxLength(255)
-            ->disableGrammarly()->required()->disableToolbarButtons([
-                'attachFiles',
-            ]);
+        return TextInput::make('bio')->maxLength(255)
+            ->disableGrammarly()->required();
     }
 
     protected function getImageFormComponent(): Component

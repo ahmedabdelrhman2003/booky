@@ -18,5 +18,6 @@ interface BookRepositoryInterface
 
     public function favToggle(int $id,int $userId);
 
+    public function rate(int $id, int $userId,int $rate);
 
 }

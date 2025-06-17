@@ -20,7 +20,8 @@ class Order extends Model
         'price',
         'status',
         'order_id',
-        'webhook_response'
+        'webhook_response',
+        'rate'
     ];
 
     protected $casts = [

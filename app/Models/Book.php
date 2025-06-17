@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[ObservedBy([BookObserver::class])]
 class Book extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -33,15 +32,12 @@ class Book extends Model implements HasMedia
 
     ];
 
-    protected $casts = [
-        'status' => BookStatusEnum::class,
-    ];
+
 
     protected static function booted()
     {
         static::saving(function ($book) {
             $book->price = $book->price_before_commission + $book->price_before_commission * 0.10;
-            $book->status = BookStatusEnum::PENDING;
         });
     }
 
@@ -103,6 +99,22 @@ class Book extends Model implements HasMedia
         return $query->whereHas('orders', function ($query) {
             $query->where('user_id',  auth('api')->id())->paid();
         });
+    }
+
+    public function isRated(): bool
+    {
+        return $this->orders()
+            ->where('user_id', auth('api')->id())
+            ->where('status', OrderTypesEnum::PAID->value)
+            ->whereNotNull('rate')
+            ->exists();
+    }
+
+    public function rate(): float|null
+    {
+        return $this->orders()
+            ->whereNotNull('rate')
+            ->avg('rate');
     }
 
 }

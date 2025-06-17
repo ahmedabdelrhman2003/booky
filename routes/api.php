@@ -45,6 +45,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'throttle']], function (
             Route::get('/favorites', [AuthenticationController::class, 'favBooks']);
             Route::get('/', [BookController::class, 'index']);
             Route::get('/{id}', [BookController::class, 'show']);
+            Route::put('rate/{id}', [BookController::class, 'rate']);
             Route::put('/favorites/{id}', [BookController::class, 'favToggle']);
         });
         Route::group(['prefix' => 'authors'], function () {
