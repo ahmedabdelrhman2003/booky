@@ -54,6 +54,11 @@ class PaymobService implements PaymentServiceInterface
         }
         if ($dto->isSuccess())
         {$this->orderService->markAsPaid($order->id, $dto->getBody());
+         $book = $order->book;        
+         $author = $book->author;
+         $price = $book->price_before_commission; 
+        $author->wallet += $price;
+        $author->save();
             Log::info('webhook return success', [ 'webhook' => $dto->getBody()]);
         }else{
             Log::error('webhook return failed', ['webhook' => $dto->getBody()]);
