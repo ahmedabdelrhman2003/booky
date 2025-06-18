@@ -56,7 +56,7 @@ class Register extends BaseRegister
     {
         return TextInput::make('iban')->label('IBAN for your bank account')
             ->minLength(9)->maxLength(29)
-//            ->regex('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/')->length('29')
+            ->regex('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/')->length('29')
             ->required();
     }
 
