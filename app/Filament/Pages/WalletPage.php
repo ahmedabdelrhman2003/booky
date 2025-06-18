@@ -38,7 +38,7 @@ class WalletPage extends Page
                 'amount' =>$this->wallet ,
             ]);
             Notification::make()
-                ->title('Your money request has been sent.')
+                ->title('Your withdrawal request has been sent.')
                 ->success()
                 ->send();
         }
